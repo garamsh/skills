@@ -3,33 +3,32 @@ name: plan-work
 description: Plans the PM's work. Keeps the issue backlog small enough to schedule from (searches before filing, merges issues whose target paths overlap, closes with a reason). Keeps a standing role per code area on a pinned roster issue, each implementation role owning a disjoint scope of paths. Assigns issues to roles with a brief, each issue to a fresh session briefed with the role's latest note. Use when the PM is about to file, triage, groom or close issues, choose the next round, assign or parallelise work, plan a round, write a brief, create or redraw a role, handle an agent needing paths outside its scope, recover after a restart, or retire an agent.
 license: Apache-2.0
 metadata:
-  version: "1.8.2"
+  version: "1.9.0"
 ---
 
 # Plan work
 
 The PM operates every step. The product is a backlog and a roster from which
-the next round can be chosen by reading them, not by remembering them. The host
-owns how an agent is started, waited on, reused and ended: load its guide;
-where it and this skill decide the same mechanism, the host wins. Model,
+the next round can be chosen by reading them, not by memory. The host owns how
+an agent is started, waited on, reused and ended: load its guide; where it and
+this skill decide the same mechanism, the host wins. Model,
 session and repeated-failure rules are `run-agents`.
 
-An issue's fields are the ones `decide-or-escalate` lists; no issue template is
-assumed. Target paths are what a round is scheduled on; an issue without them
-cannot be placed except by guessing, so it is not ready to dispatch.
+An issue's fields are those `decide-or-escalate` lists. Rounds are scheduled on target paths; an issue without them is not ready to
+dispatch.
 
 ## Roles
 
 A role is a code area plus a kind of work.
 
 - Implementation roles are split by code area. Each owns a scope of paths, and
-  no path is in two scopes: two owners of one file produce conflicting PRs only
-  the PM can sequence. Paths only the PM edits are in no scope.
+  no path is in two: two owners of one file produce conflicting PRs only the PM
+  can sequence. Paths only the PM edits are in no scope.
 - Review and QA are fixed roles, each task on a fresh agent: one that has seen
-  the area checks it against memory.
+  the area checks it from memory.
 
-Draw scopes from coupling. Files changing together belong
-to one scope. Count co-changes over recent history:
+Draw scopes from coupling: files changing together share a scope. Count
+co-changes over recent history:
 
 ```sh
 git log -60 --name-only --format='format:@' | awk '
@@ -41,14 +40,13 @@ git log -60 --name-only --format='format:@' | awk '
   sort -rn | head -20
 ```
 
-Each line: commits changing both, Jaccard (both ÷ either), the pair; coupled
-groups top the list. A file changing with everything, like a README, is an
-index, not a coupling.
+Each line: commits changing both, Jaccard (both ÷ either), the pair. A file
+changing with everything, like a README, is an index, not a coupling.
 
 ## The roster
 
-One pinned issue per project, titled `Agent roster`, records every role. If no
-open issue has that title, file it with this table as its body and pin it.
+One pinned issue per project, titled `Agent roster`, records every role. If none is
+open, file it with this table as its body and pin it.
 
 ```
 | Role | Kind | Scope | Model | Agent (worktree, agent id) |
@@ -59,13 +57,13 @@ open issue has that title, file it with this table as its body and pin it.
 Update it in the same step as any role added or removed, scope redrawn, or
 agent started, handed over or retired: a roster one change behind sends the
 next issue to the wrong agent. Per-issue status goes in the round-close
-comment, not a Status cell. After a restart, read the roster, then each
-agent's worktree and PR, never memory.
+comment. After a restart, read the roster, then each agent's worktree and PR,
+never memory.
 
 ## Before filing
 
-1. Search the open issues for the same target paths, then the same subject. A
-   duplicate costs a triage; two issues on one file are a collision.
+1. Search the open issues for the same target paths, then the same subject:
+   two issues on one file collide.
 2. Found one → add the evidence to it. Do not file.
 3. None → file it, with target paths. If they are unknown, read the code the
    issue is about first.
@@ -79,43 +77,46 @@ agent's worktree and PR, never memory.
 | Same subject, disjoint paths | Keep both; link them | They can run in parallel. |
 
 To merge: keep the issue others already cite, copy the other's acceptance
-criteria and target paths into it, close the other as its duplicate. When
-the merged issue would be too large for one PR, or would hold a ready issue
-behind one still in triage, keep both and record one as blocked by the other:
-they then never go out in the same round.
+criteria and target paths into it, close the other as its duplicate. When the
+result would be too large for one PR, or hold a ready issue behind one still in
+triage, keep both, one blocked by the other: they never share a round.
 
 ## Closing
 
-- Close with a reason in a comment: done (name the PR), duplicate of,
+- Close with a reason in a comment: done (name the PR), duplicate of or
   superseded by (name the issue), or won't do (say why).
-- Do not delete: it destroys the record of what was asked, decided and
-  rejected. Delete only spam or a test filed by mistake.
+- Delete only spam or a test filed by mistake: deleting destroys the record.
 - Before closing as done, check the default branch's tip holds the change and
-  ask the host whether the PR merged: a squash merge leaves the branch
-  unmerged in git's eyes.
+  ask the host whether the PR merged: a squash leaves the branch unmerged.
 
 ## Backlog pass
 
 Before choosing a round, answer from the issues, not memory: every open issue
 names target paths and still describes the default branch's tip; none is done,
-duplicated or superseded; no two share a target path unless one is recorded as
-blocked by the other; no issue's change falsifies a claim another open issue
-owns. An answer that needs memory ("nearly done") goes into the issue, then
-re-run. A round is the issues with pairwise-disjoint target paths.
+duplicated or superseded; no two share a target path unless one is blocked by
+the other; no issue's change falsifies a claim another open issue owns. An
+answer that needs memory ("nearly done") goes into the issue, then re-run. A round is the issues with pairwise-disjoint target paths.
 
 ## Assigning
 
 An issue goes to the role whose scope covers its target paths, expanded by
 their coupled groups.
 
-- Paths span two roles → split the issue along the scopes, or redraw the
-  scopes and update the roster, before dispatch.
-- Paths in no scope → add a role, or grow the closest role's scope; record
-  either on the roster.
+- Paths span two roles → split the issue along the scopes, or redraw them and
+  update the roster, before dispatch.
+- Paths in no scope → add a role, or grow the closest role's scope; record it
+  on the roster.
 - Several issues for one role → one brief; the rest waits, recorded as
   blocked.
 
 ## Running a round
+
+Review before dispatch: start no round while earlier PRs await your review
+beyond what you can review in this round: unreviewed PRs piled on one goal
+branch, and each late review forced rebases and re-reviews. One session coordinates a project; resume it when a usage limit or
+failure stops it, never replace it: workers report to the session that started
+them, so a second one splits the state and its cleanup removes live work. After
+a restart, read the roster first.
 
 ```
 - [ ] 1. Pick issues; split any too large
@@ -129,25 +130,25 @@ their coupled groups.
 - [ ] 9. Account in the round-close comment; retire on a trigger
 ```
 
-1. **Split** an issue an agent cannot finish in one fresh context, or that
-   bundles independently deliverable problems.
+1. **Split** an issue too large for one fresh context, or bundling
+   independently deliverable problems.
 3. **Contested names.** Assign at dispatch anything two agents could both
    claim: a branch, a number, a port. Give whatever an agent starts outside its
    worktree, such as a container or a long job, a name carrying the issue
    number: a stopped agent reports none of it.
 4. **The brief carries what the issue does not:**
-   - what changed since the issue was written, and the default branch's tip to
+   - what changed since the issue was written; the default branch's tip to
      start from;
    - the convention files that govern the target paths, which the agent reads
      in full, and the target paths, which it reads by range; no architecture
      document or decision record the task does not name;
-   - what not to touch: other roles' scopes and the PM's paths;
-   - the names and numbers assigned in step 3;
+   - what not to touch: other roles' scopes and the PM's paths; the names
+     and numbers from step 3;
    - that a check not run is reported as not run;
-   - that the agent waits on a long job for one completion signal and reads a
-     long output by its tail plus exit code;
-   - what ends a round that is not converging, such as the same failure
-     repeating: the agent stops and reports;
+   - that it waits on a long job for one completion signal and reads long
+     output by its tail plus exit code;
+   - that the agent stops and reports when a round is not converging, such as
+     the same failure repeating;
    - the role's latest note, to read first, and the request for a new one
      (`run-agents`);
    - its model, from `run-agents`.
@@ -157,32 +158,28 @@ their coupled groups.
 6. **Dispatch** through the host's protocol for tracked work: an untracked
    agent dies invisibly. Where the host offers none, run one agent directly.
 7. **Confirm the start** by something only a started, unblocked agent could
-   produce, such as a first commit or a message naming what it read, not by the
-   host reporting success.
+   produce, such as a first commit or a message naming what it read and the model it
+   runs on, not by the host reporting success.
 8. **Judge by output** (commits, a PR, an issue comment), not by a
    heartbeat, a live terminal or silence. Look for output each time you
-   return. Repair a stuck agent in place; a second worktree for its area
-   orphans the first.
+   return. Repair a stuck agent in place; a second worktree orphans the first.
 9. **Account.** Close the round with one comment on the roster issue, a line
-   per agent: role, issue, PR, model, verified or not, kept or retired and why.
+   per agent: role, issue, PR, model it ran on, verified or not, kept or retired and why.
 
 ## When a round goes wrong
 
 - An agent needs a path outside its scope → it stops and reports; the PM
   redraws the scopes and updates the roster, or a file is in two roles' hands.
 - Two PRs in one round conflict → the scopes were wrong. Fix them and their
-  coupled groups, not just the merge, or the next round repeats
-  the conflict.
-- A wrong-direction fix, a repeated finding or a repeated failure → `run-agents`.
+  coupled groups, not just the merge, or the next round repeats it.
+- A wrong-direction fix, repeated finding or repeated failure → `run-agents`.
 
 ## Retiring an agent
 
 Retire an agent when its issue merges or closes unmerged, at `run-agents`'
-session limit, or when its scope changed, so it no longer owns what it was
-briefed on. A new agent takes the role, and the roster records the handover:
+session limit, or when its scope changed. A new agent takes the role, and the roster records the handover:
 old id, new id, trigger. A role is removed only when its scope is gone.
 
 Retiring ends what the agent started: its worktree, its branch once merged or
 stale, what its report names. Before releasing it, or once it stops without
-reporting, find each by its step 3 name and confirm the removal landed: a
-cleanup reporting success proves no more than a start does.
+reporting, find each by its step 3 name and confirm the removal landed.
