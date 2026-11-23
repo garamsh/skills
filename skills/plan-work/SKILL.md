@@ -3,7 +3,7 @@ name: plan-work
 description: Plans the PM's work. Keeps the issue backlog small enough to schedule from (searches before filing, merges issues whose target paths overlap, closes with a reason). Keeps a standing role per code area on a pinned roster issue, each implementation role owning a disjoint scope of paths. Assigns issues to roles with a brief, each issue to a fresh session briefed with the role's latest note. Use when the PM is about to file, triage, groom or close issues, choose the next round, assign or parallelise work, plan a round, write a brief, create or redraw a role, handle an agent needing paths outside its scope, recover after a restart, or retire an agent.
 license: Apache-2.0
 metadata:
-  version: "1.9.0"
+  version: "1.10.0"
 ---
 
 # Plan work
@@ -94,10 +94,10 @@ triage, keep both, one blocked by the other: they never share a round.
 
 Before choosing a round, answer from the issues, not memory: every open issue
 names target paths and still describes the default branch's tip; none is done,
-duplicated or superseded; no two share a target path unless one is blocked by
-the other; no issue's change falsifies a claim another open issue owns. An
-answer that needs memory ("nearly done") goes into the issue, then re-run. A
-round is the issues with pairwise-disjoint target paths.
+duplicated or superseded; none shares a target path unless blocked by the
+other; none's change falsifies a claim another owns. An answer that needs
+memory goes into the issue, then re-run. A round is the issues with
+pairwise-disjoint target paths.
 
 ## Assigning
 
@@ -108,8 +108,9 @@ their coupled groups.
   scopes and update the roster, before dispatch.
 - Paths in no scope → add a role, or grow the closest role's scope; record
   either on the roster.
-- Several issues for one role → one brief; the rest waits, recorded as
-  blocked.
+- Several issues for one role, or one needing another's unmerged change → one
+  brief; the rest waits, blocked until that PR merges, never stacked on it:
+  each squash below forces a replay that can drop a commit.
 
 ## Running a round
 
