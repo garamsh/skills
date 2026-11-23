@@ -25,8 +25,8 @@ task's choice, which a roster alone would hide.
 Review stays on the strongest, the only check left on a design mistake or a
 repeated failure; QA runs below it, filing evidence the PM triages. Subagent
 inheritance: a host may start subagents on the parent's model (Claude Code
-does); name the chosen one. When the user changes a model, update the roster and every brief and
-scheduled job naming it: agents kept running the old one.
+does); name the chosen one. When the user changes a model, update the roster
+and every brief and scheduled job naming it: agents kept running the old one.
 
 On a wrong-direction fix (it fixes something other than what was named, or the
 symptom), and after a second round on a repeated finding, re-scope the brief,
