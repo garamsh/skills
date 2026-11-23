@@ -42,8 +42,7 @@ git log -60 --name-only --format='format:@' | awk '
 ```
 
 Each line: commits changing both, Jaccard (both ÷ either), the pair. A file
-changing with everything, like a README, is an
-index, not a coupling.
+changing with everything, like a README, is an index, not a coupling.
 
 ## The roster
 
@@ -95,10 +94,10 @@ triage, keep both, one blocked by the other: they never share a round.
 
 Before choosing a round, answer from the issues, not memory: every open issue
 names target paths and still describes the default branch's tip; none is done,
-duplicated or superseded; no two share a target path unless one is
-blocked by the other; no issue's change falsifies a claim another open issue
-owns. An answer that needs memory ("nearly done") goes into the issue, then
-re-run. A round is the issues with pairwise-disjoint target paths.
+duplicated or superseded; no two share a target path unless one is blocked by
+the other; no issue's change falsifies a claim another open issue owns. An
+answer that needs memory ("nearly done") goes into the issue, then re-run. A
+round is the issues with pairwise-disjoint target paths.
 
 ## Assigning
 
