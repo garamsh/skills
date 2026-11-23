@@ -3,7 +3,7 @@ name: run-agents
 description: Runs the PM's role agents on the model that fits the work — the strongest for the PM and the final review, a cheaper one for every role agent. Use when the PM, following plan-work, dispatches a round, chooses a role's model, starts, commands or retires a role's agent, or hands a fresh session its role note.
 license: Apache-2.0
 metadata:
-  version: "3.1.0"
+  version: "3.2.0"
 ---
 
 # Run agents
@@ -16,7 +16,9 @@ cheaper one runs every role agent, the optional independent reviewer
 included. Review stays on the strongest, the only check left on a design
 mistake or a repeated failure; QA runs below it, filing evidence the PM
 triages. Subagent inheritance: a host may start subagents on the parent's
-model (Claude Code does); name the cheaper one.
+model (Claude Code does); name the cheaper one. When the user changes a model,
+update the roster and every brief and scheduled job naming it: agents kept
+running the old one.
 
 On a wrong-direction fix (it fixes something other than what was named, or the
 symptom), and after a second round on a repeated finding, re-scope the brief,
