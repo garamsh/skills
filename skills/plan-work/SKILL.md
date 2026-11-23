@@ -3,13 +3,13 @@ name: plan-work
 description: Plans the PM's work. Keeps the issue backlog small enough to schedule from (searches before filing, merges issues whose target paths overlap, closes with a reason). Keeps a standing role per code area on a pinned roster issue, each implementation role owning a disjoint scope of paths. Assigns issues to roles with a brief, each issue to a fresh session briefed with the role's latest note. Use when the PM is about to file, triage, groom or close issues, choose the next round, assign or parallelise work, plan a round, write a brief, create or redraw a role, handle an agent needing paths outside its scope, recover after a restart, or retire an agent.
 license: Apache-2.0
 metadata:
-  version: "1.9.0"
+  version: "1.10.0"
 ---
 
 # Plan work
 
 The PM operates every step. The product is a backlog and a roster from which
-the next round can be chosen by reading them, not by memory. The host owns
+the next round is chosen by reading, not memory. The host owns
 how an agent is started, waited on, reused and ended: load its guide; where it
 and this skill decide the same mechanism, the host wins. Model, session and
 repeated-failure rules are `run-agents`.
@@ -85,7 +85,7 @@ triage, keep both, one blocked by the other: they never share a round.
 
 - Close with a reason in a comment: done (name the PR), duplicate of,
   superseded by (name the issue), or won't do (say why).
-- Delete only spam or a test filed by mistake: deleting destroys the record.
+- Delete only spam or a mistaken test: deleting destroys the record.
 - Before closing as done, check the default branch's tip holds the change and
   ask the host whether the PR merged: a squash merge leaves the branch
   unmerged.
@@ -104,21 +104,21 @@ round is the issues with pairwise-disjoint target paths.
 An issue goes to the role whose scope covers its target paths, expanded by
 their coupled groups.
 
-- Paths span two roles → split the issue along the scopes, or redraw the
-  scopes and update the roster, before dispatch.
-- Paths in no scope → add a role, or grow the closest role's scope; record
-  either on the roster.
-- Several issues for one role → one brief; the rest waits, recorded as
-  blocked.
+- Paths span two roles → split the issue along the scopes, or redraw them and
+  update the roster, before dispatch.
+- Paths in no scope → add a role or grow the closest scope, on the roster.
+- Several issues for one role, or one needing another's unmerged change → one
+  brief; the rest waits, blocked until that PR merges, never dispatched onto
+  it: each squash below forces a replay, and a replay can drop one.
 
 ## Running a round
 
-Start no round while PRs from an earlier one still wait for your review:
-unreviewed PRs piled on one goal branch, and each late review forced rebases.
+Start no round while PRs from an earlier one await review: piled on one goal
+branch, each late review forced rebases.
 
 One session coordinates a project. Resume it after a usage limit or failure,
 never replace it: workers report to the session that started them, so a second
-session splits the state and its cleanup removes live work (see The roster).
+splits the state and its cleanup removes live work.
 
 ```
 - [ ] 1. Pick issues; split any too large
@@ -132,8 +132,8 @@ session splits the state and its cleanup removes live work (see The roster).
 - [ ] 9. Account in the round-close comment; retire on a trigger
 ```
 
-1. **Split** an issue an agent cannot finish in one fresh context, or that
-   bundles independently deliverable problems.
+1. **Split** an issue one fresh context cannot finish, or that bundles
+   independently deliverable problems.
 3. **Contested names.** Assign at dispatch anything two agents could both
    claim: a branch, a number, a port. Give whatever an agent starts outside its
    worktree, such as a container or a long job, a name carrying the issue
@@ -155,33 +155,35 @@ session splits the state and its cleanup removes live work (see The roster).
      (`run-agents`);
    - its model, from `run-agents`.
 5. **Validate before dispatch.** Read the brief against the issue's acceptance
-   criteria for a contradiction, such as a criterion the "not to touch" list
-   makes impossible. Fix it and re-read.
-6. **Dispatch** through the host's protocol for tracked work: an untracked
-   agent dies invisibly. Where the host offers none, run one agent directly.
-7. **Confirm the start** by something only a started, unblocked agent could
-   produce, such as a first commit or a message naming what it read and the
-   model it runs on, not by the host reporting success.
+   criteria for a contradiction, such as one the "not to touch" list makes
+   impossible; fix it, re-read.
+6. **Dispatch** through the host's tracked protocol: an untracked agent dies
+   invisibly. Where it offers none, run one agent directly.
+7. **Confirm the start** by something only a started agent could produce, such
+   as a first commit or a message naming what it read and its model, not by the
+   host reporting success.
 8. **Judge by output** (commits, a PR, an issue comment), not by a
    heartbeat, a live terminal or silence. Repair a stuck agent in place; a
    second worktree orphans the first.
-9. **Account.** Close the round with one comment on the roster issue, a line
-   per agent: role, issue, PR, model it ran on, verified or not, kept or
+9. **Account.** Close the round with one roster-issue comment, a line
+   per agent: role, issue, PR, model, verified or not, kept or
    retired and why.
 
 ## When a round goes wrong
 
 - An agent needs a path outside its scope → it stops and reports; the PM
   redraws the scopes and updates the roster, or a file is in two roles' hands.
-- Two PRs in one round conflict → the scopes were wrong. Fix them and their
-  coupled groups, not just the merge, or the next round repeats it.
+- Two PRs in one round conflict → the scopes were wrong; fix them and their
+  coupled groups, not just the merge.
+- A branch was replayed → the reviewer compares commits before and after;
+  a missing one is a finding.
 - A wrong-direction fix, repeated finding or repeated failure → `run-agents`.
 
 ## Retiring an agent
 
 Retire an agent when its issue merges or closes unmerged, at `run-agents`'
 session limit, or when its scope changed, so it no longer owns what it was
-briefed on. A new agent takes the role, and the roster records the handover:
+briefed on. A new agent takes the role; the roster records the handover:
 old id, new id, trigger. A role is removed only when its scope is gone.
 
 Retiring ends what the agent started: its worktree, its branch once merged or
