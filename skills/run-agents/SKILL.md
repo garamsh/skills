@@ -11,19 +11,21 @@ metadata:
 `plan-work` governs the roles; this skill sets their models and starts,
 commands and retires their agents.
 
-The user names the models. The strongest runs the PM and the final review. The
-PM picks each role agent's model per task, the optional independent reviewer
+The user names the models. The strongest runs the PM and the final review.
+
+The PM picks each role agent's model per task, the optional independent reviewer
 included; the default is the cheaper one. The strongest takes from the start
 architecture or interface design, a security boundary, a change across several
 modules or repositories, concurrency or distributed state, a failure with an
 unknown cause, and a task a cheaper agent has failed review more than twice:
 rework there costs more than the strong model would have. The roster's Model
 column holds the role's default; the brief and the round-close line hold the
-task's choice, which a roster alone would hide. Review stays on the
-strongest, the only check left on a design mistake or a repeated failure; QA
-runs below it, filing evidence the PM triages. Subagent inheritance: a host
-may start subagents on the parent's model (Claude Code does); name the chosen
-one. When the user changes a model, update the roster and every brief and
+task's choice, which a roster alone would hide.
+
+Review stays on the strongest, the only check left on a design mistake or a
+repeated failure; QA runs below it, filing evidence the PM triages. Subagent
+inheritance: a host may start subagents on the parent's model (Claude Code
+does); name the chosen one. When the user changes a model, update the roster and every brief and
 scheduled job naming it: agents kept running the old one.
 
 On a wrong-direction fix (it fixes something other than what was named, or the
