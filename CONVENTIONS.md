@@ -19,7 +19,7 @@ after. Fix an incident where it happened, adding no rule or code for a single
 case. Growth is the user's decision, and a grant needs no offset: #256
 `review-architecture` ≤ 900 words; #263 `meet-deadline` ≤ 500, `delegate-goal`
 ≤ 650; #266 `review-craft` ≤ 700; #284 `run-agents` ≤ 354; #296 `plan-work` ≤
-1681.
+1681; #298 `run-agents` ≤ 456.
 
 ## Agent definitions — `agents/*.md`
 
