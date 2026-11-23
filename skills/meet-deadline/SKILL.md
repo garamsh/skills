@@ -3,7 +3,7 @@ name: meet-deadline
 description: Runs a goal against a deadline for the PM by cutting waiting, never quality — a goal branch, review-only PRs, one final verification, shared indexes updated once. Use when a goal is urgent, has a deadline, must finish by today, or the user says to skip waiting on per-PR verification.
 license: Apache-2.0
 metadata:
-  version: "1.1.2"
+  version: "1.2.0"
 ---
 
 # Meet a deadline
@@ -29,17 +29,22 @@ run, trading waiting time only: per-PR verification took 27% of a
    for CI or update-branch. Step 6 reports verification as `deferred to final
    check`, not passed. The rest applies, the independent reviewer included, and
    `guard` still refuses a head pushed after review.
-5. **Final check.** After the last PR merges and the indexes update, fetch and
-   merge new default-branch commits into the goal branch. Run every check
-   workers deferred and `review-pr` step 2 on that pair: the changed paths and
-   their dependents where the project defines how to find them, else the full
-   suite.
+5. **Final check.** After the last PR merges and the indexes update, merge new
+   default-branch commits into the goal branch. Run every check workers
+   deferred and `review-pr` step 2 on that pair: the changed paths and their
+   dependents where the project defines how to find them, else the full suite.
 6. **Failures.** Trace each failure to its PR. A worker fixes it in a goal-branch
    PR, reviewed as in step 4; then rerun step 5 on the new head.
 7. **Land.** Open the goal branch's PR into the default branch and take
    `review-pr` steps 3 to 9, reading only what no goal PR's review covered:
    the index commits and any merge resolution. If the default branch moved, go
    back to step 5: the tree that lands is the tree verified.
+
+**Early catch-up.** Catch up only for a change the goal branch needs now; each
+costs a review. Merge the default branch via a PR, by merge commit: a
+cherry-pick or squash copies the commits for step 7 to reread. The body names
+them; review reads only the resolution. This outranks a squash rule; file the
+conflict in the conventions' repository.
 
 ## Not shortcuts
 
